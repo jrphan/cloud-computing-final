@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+<div class="container py-4 wrapper-container">
+  <div class="row mb-4">
+    <div class="col-lg-10 mx-auto">
+      <form class="search-bar-ui d-flex flex-wrap gap-2 align-items-center shadow-sm p-3 bg-white rounded-5 border border-2 border-primary-subtle" method="get" action="/posts">
+        <div class="input-group flex-grow-1">
+          <span class="input-group-text bg-white border-0"><i class="fas fa-search text-primary"></i></span>
+          <input type="text" class="form-control border-0 search-input" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Tìm kiếm tiêu đề, nội dung..." autocomplete="off">
+        </div>
+        <select class="form-select rounded-4" name="category" style="max-width:220px">
+          <option value="">Tất cả chuyên mục</option>
+          <% categories.forEach(function(category) { %>
+            <option value="<%= category.id %>" <%= categoryId==category.id ? 'selected' : '' %>><%= category.name %></option>
+          <% }) %>
+        </select>
+        <button class="btn btn-gradient px-4 rounded-4 fw-semibold" type="submit"><i class="fas fa-search me-1"></i> Tìm kiếm</button>
+      </form>
+    </div>
+  </div>
+  <div class="row g-4">
+    <% if (posts.length === 0) { %>
+      <div class="col-12 text-center text-muted py-5">
+        <i class="fas fa-newspaper fa-3x mb-3"></i>
+        <div>Không có bài viết nào phù hợp.</div>
+      </div>
+    <% } %>
+    <% posts.forEach(function(post) { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 post-card border-0">
+          <div class="position-relative">
+            <img src="<%= post.thumbnail ? post.thumbnail : 'https://via.placeholder.com/400x200?text=No+Image' %>" class="post-thumb w-100" style="height: 200px; object-fit: cover; border-radius: var(--radius-lg) var(--radius-lg) 0 0;" alt="<%= post.title %>" />
+            <div class="position-absolute top-0 start-0 p-2">
+              <span class="badge bg-primary">
+                <%= post.category.name %>
+              </span>
+            </div>
+          </div>
+          <div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <small class="text-muted">
+                <i class="far fa-clock"></i>
+                <%= new Date(post.createdAt).toLocaleDateString('vi-VN') %>
+              </small>
+              <small class="text-muted">
+                <i class="far fa-comment"></i>
+                <%= post._count.comments %>
+              </small>
+            </div>
+            <h5 class="card-title h5 mb-3">
+              <a href="/posts/<%= post.slug %>" class="text-decoration-none text-dark hover-primary">
+                <%= post.title %>
+              </a>
+            </h5>
+            <p class="card-text text-muted small mb-4">
+              <%= post.content.substring(0, 100) %>...
+            </p>
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+              <a href="/posts/<%= post.slug %>" class="btn btn-sm btn-outline-primary">
+                Đọc tiếp
+                <i class="fas fa-arrow-right ms-1"></i>
+              </a>
+              <div class="d-flex align-items-center gap-2 text-muted small">
+                <i class="fas fa-user-circle"></i>
+                <span><%= post.author.name %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+  <% if (totalPages > 1) { %>
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item <%= page === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="?search=<%= encodeURIComponent(search) %>&category=<%= categoryId %>&page=<%= page - 1 %>" tabindex="-1">&laquo;</a>
+        </li>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= page === i ? 'active' : '' %>">
+            <a class="page-link" href="?search=<%= encodeURIComponent(search) %>&category=<%= categoryId %>&page=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
+        <li class="page-item <%= page === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="?search=<%= encodeURIComponent(search) %>&category=<%= categoryId %>&page=<%= page + 1 %>">&raquo;</a>
+        </li>
+      </ul>
+    </nav>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>
+<style>
+  .search-bar-ui { border: 1.5px solid var(--primary); background: #fff; }
+  .search-bar-ui .form-control:focus, .search-bar-ui .form-select:focus { box-shadow: 0 0 0 2px var(--primary); border-color: var(--primary); }
+  .search-bar-ui .input-group-text { background: #fff; border: none; }
+  .search-bar-ui .search-input { font-size: 1.1rem; border-radius: 2rem; }
+  .search-bar-ui .form-select, .search-bar-ui .btn { border-radius: 2rem; }
+  @media (max-width: 575.98px) {
+    .search-bar-ui { flex-direction: column !important; gap: 0.5rem !important; }
+    .search-bar-ui .form-select, .search-bar-ui .btn { width: 100%; }
+  }
+  .post-thumb { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .post-card { transition: var(--transition); }
+  .post-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+  .badge.bg-primary { background: var(--gradient-primary) !important; }
+  .hover-primary { transition: var(--transition); }
+  .hover-primary:hover { color: var(--primary) !important; }
+  .btn-gradient { background: var(--gradient-primary); color: #fff; border: none; }
+  .btn-gradient:hover { filter: brightness(1.08); }
+  .btn-outline-primary { border-radius: var(--radius); font-weight: 500; }
+  .btn-outline-primary:hover { background: var(--primary); color: #fff; }
+  .wrapper-container {
+    min-height: calc(100vh - 440px);
+  }
+</style> 

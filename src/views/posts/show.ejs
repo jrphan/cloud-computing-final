@@ -34,8 +34,14 @@
                                             <%= post._count.comments %> bình luận
                                         </span>
                                     </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="far fa-eye text-primary"></i>
+                                        <span class="view-count">
+                                            <%= post.views %>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="post-content mb-4">
+                                <div class="post-content mb-4 text-muted">
                                     <%- post.content %>
                                 </div>
                                 <div class="d-flex align-items-center gap-3">
@@ -43,7 +49,7 @@
                                         <i class="fas fa-arrow-left"></i>
                                         Quay lại
                                     </a>
-                                    <% if (locals.user && (user.id===post.authorId || user.role==='ADMIN' )) { %>
+                                    <% if (locals.user && (user.id===post.authorId )) { %>
                                         <a href="/posts/<%= post.slug %>/edit" class="btn btn-outline-secondary">
                                             <i class="fas fa-edit"></i>
                                             Chỉnh sửa
@@ -156,17 +162,6 @@
                         <p class="text-muted small mb-3">
                             <%= post.author.email %>
                         </p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-info btn-sm">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
                     </div>
                 </div>
 
@@ -176,44 +171,38 @@
                         <i class="fas fa-link"></i>
                         <span>Bài viết liên quan</span>
                     </div>
-                    <div class="list-group list-group-flush">
+                    <div class="list-group list-group-flush related-list">
                         <% const relatedPosts=posts.filter(p=>
                             p.categoryId === post.categoryId && p.id !== post.id
                             ).slice(0, 3); %>
-                            <% if (relatedPosts.length> 0) { %>
-                                <% relatedPosts.forEach(function(relatedPost) { %>
-                                    <a href="/posts/<%= relatedPost.slug %>"
-                                        class="list-group-item list-group-item-action py-3">
-                                        <div class="d-flex gap-3">
-                                            <% if (relatedPost.thumbnail) { %>
-                                                <img src="<%= relatedPost.thumbnail %>" class="rounded" width="64"
-                                                    height="64" style="object-fit: cover;"
-                                                    alt="<%= relatedPost.title %>">
-                                                <% } %>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-1 text-truncate">
-                                                            <%= relatedPost.title %>
-                                                        </h6>
-                                                        <div class="d-flex align-items-center gap-2 text-muted small">
-                                                            <span><i class="far fa-clock"></i>
-                                                                <%= new
-                                                                    Date(relatedPost.createdAt).toLocaleDateString('vi-VN')
-                                                                    %>
-                                                            </span>
-                                                            <span><i class="far fa-comment"></i>
-                                                                <%= relatedPost._count.comments %>
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                        <% if (relatedPosts.length> 0) { %>
+                            <% relatedPosts.forEach(function(relatedPost) { %>
+                                <a href="/posts/<%= relatedPost.slug %>"
+                                    class="list-group-item list-group-item-action py-3">
+                                    <% if (relatedPost.thumbnail) { %>
+                                        <img src="<%= relatedPost.thumbnail %>" class="related-thumb" alt="<%= relatedPost.title %>" onerror="this.src='https://via.placeholder.com/56x56?text=No+Image'">
+                                    <% } else { %>
+                                        <img src="https://via.placeholder.com/56x56?text=No+Image" class="related-thumb" alt="No image">
+                                    <% } %>
+                                    <div class="flex-grow-1">
+                                        <span class="related-title" title="<%= relatedPost.title %>"><%= relatedPost.title %></span>
+                                        <div class="related-meta">
+                                            <span><i class="far fa-clock"></i>
+                                                <%= new Date(relatedPost.createdAt).toLocaleDateString('vi-VN') %>
+                                            </span>
+                                            <span><i class="far fa-comment"></i>
+                                                <%= relatedPost._count.comments %>
+                                            </span>
                                         </div>
-                                    </a>
-                                    <% }); %>
-                                        <% } else { %>
-                                            <div class="list-group-item py-3 text-center text-muted">
-                                                <i class="fas fa-info-circle mb-2"></i>
-                                                <p class="mb-0">Không có bài viết liên quan</p>
-                                            </div>
-                                            <% } %>
+                                    </div>
+                                </a>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="list-group-item py-3 text-center text-muted">
+                                <i class="fas fa-info-circle mb-2"></i>
+                                <p class="mb-0">Không có bài viết liên quan</p>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
 
@@ -226,7 +215,7 @@
                     <div class="list-group list-group-flush">
                         <% const categories=[...new Set(posts.map(p=> p.category))]; %>
                             <% categories.forEach(category=> { %>
-                                <a href="/categories/<%= category.slug %>"
+                                <a href="/posts?category=<%= category.id %>"
                                     class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="fas fa-folder text-primary"></i>
@@ -329,6 +318,117 @@
                 color: var(--gray-900);
             }
         }
+
+        /* --- Related Posts Card --- */
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.25rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .card-header i {
+            background: var(--gradient-card);
+            color: var(--primary);
+            border-radius: 50%;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .related-list .list-group-item {
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-height: 80px;
+            transition: var(--transition);
+            border-radius: var(--radius-lg);
+            margin-bottom: 0.5rem;
+            background: transparent;
+        }
+        .related-list .list-group-item:last-child {
+            margin-bottom: 0;
+        }
+        .related-list .list-group-item:hover {
+            background: var(--gradient-card);
+            box-shadow: var(--shadow-sm);
+        }
+        .related-thumb {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            background: var(--gray-200);
+            flex-shrink: 0;
+        }
+        .related-title {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+            display: block;
+            color: var(--gray-900);
+        }
+        .related-meta {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        /* Remove selection highlight for header */
+        .card-header span, .card-header i {
+            user-select: none;
+        }
     </style>
+
+    <script>
+        // Track post view time
+        let viewTimer;
+        let viewCounted = false;
+        const VIEW_DURATION = 15000; // 15 seconds in milliseconds
+
+        function startViewTimer() {
+            if (!viewCounted) {
+                viewTimer = setTimeout(() => {
+                    // Increment view count after 15 seconds
+                    fetch(`/posts/<%= post.slug %>/view`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update view count in the UI
+                        const viewCountElement = document.querySelector('.view-count');
+                        if (viewCountElement) {
+                            viewCountElement.textContent = data.views;
+                        }
+                        viewCounted = true;
+                    })
+                    .catch(error => console.error('Error updating view count:', error));
+                }, VIEW_DURATION);
+            }
+        }
+
+        // Start timer when page loads
+        document.addEventListener('DOMContentLoaded', startViewTimer);
+
+        // Reset timer if user leaves page before 15 seconds
+        window.addEventListener('beforeunload', () => {
+            if (viewTimer && !viewCounted) {
+                clearTimeout(viewTimer);
+            }
+        });
+    </script>
 
     <%- include('../partials/footer') %>

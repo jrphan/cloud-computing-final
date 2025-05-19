@@ -60,7 +60,7 @@
                 </div>
 
                 <!-- Latest Posts -->
-                <div class="col-12">
+                <div class="col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="h4 mb-0 d-flex align-items-center gap-2">
                             <i class="fas fa-newspaper text-primary"></i>
@@ -71,55 +71,52 @@
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     </div>
-                    <div class="row g-  4">
+                    <div class="row g-4">
                         <% posts.slice(1).forEach(function(post) { %>
-                            <div class="col-md-6 col-lg-4">
+                            <div class="col-md-6 col-lg-6 mb-4">
                                 <div class="card h-100 post-card">
-                                    <% if (post.thumbnail) { %>
-                                        <div class="position-relative">
-                                            <img src="<%= post.thumbnail %>" class="post-thumb w-100"
-                                                style="height: 200px; object-fit: cover;" alt="<%= post.title %>">
-                                            <div class="position-absolute top-0 start-0 p-2">
-                                                <span class="badge bg-primary">
-                                                    <%= post.category.name %>
+                                    <div class="position-relative">
+                                        <img src="<%= post.thumbnail ? post.thumbnail : 'https://via.placeholder.com/400x200?text=No+Image' %>" class="post-thumb w-100" style="height: 200px; object-fit: cover;" alt="<%= post.title %>">
+                                        <div class="position-absolute top-0 start-0 p-2">
+                                            <span class="badge bg-primary">
+                                                <%= post.category.name %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-center gap-3 mb-3">
+                                            <small class="text-muted">
+                                                <i class="far fa-clock"></i>
+                                                <%= new Date(post.createdAt).toLocaleDateString('vi-VN') %>
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="far fa-comment"></i>
+                                                <%= post._count.comments %>
+                                            </small>
+                                        </div>
+                                        <h5 class="card-title h5 mb-3">
+                                            <a href="/posts/<%= post.slug %>"
+                                                class="text-decoration-none text-dark hover-primary">
+                                                <%= post.title %>
+                                            </a>
+                                        </h5>
+                                        <p class="card-text text-muted small mb-4">
+                                            <%= post.content.substring(0, 100) %>...
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="/posts/<%= post.slug %>"
+                                                class="btn btn-sm btn-outline-primary">
+                                                Đọc tiếp
+                                                <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                            <div class="d-flex align-items-center gap-2 text-muted small">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>
+                                                    <%= post.author.name %>
                                                 </span>
                                             </div>
                                         </div>
-                                        <% } %>
-                                            <div class="card-body p-4">
-                                                <div class="d-flex align-items-center gap-3 mb-3">
-                                                    <small class="text-muted">
-                                                        <i class="far fa-clock"></i>
-                                                        <%= new Date(post.createdAt).toLocaleDateString('vi-VN') %>
-                                                    </small>
-                                                    <small class="text-muted">
-                                                        <i class="far fa-comment"></i>
-                                                        <%= post._count.comments %>
-                                                    </small>
-                                                </div>
-                                                <h5 class="card-title h5 mb-3">
-                                                    <a href="/posts/<%= post.slug %>"
-                                                        class="text-decoration-none text-dark hover-primary">
-                                                        <%= post.title %>
-                                                    </a>
-                                                </h5>
-                                                <p class="card-text text-muted small mb-4">
-                                                    <%= post.content.substring(0, 100) %>...
-                                                </p>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <a href="/posts/<%= post.slug %>"
-                                                        class="btn btn-sm btn-outline-primary">
-                                                        Đọc tiếp
-                                                        <i class="fas fa-arrow-right ms-1"></i>
-                                                    </a>
-                                                    <div class="d-flex align-items-center gap-2 text-muted small">
-                                                        <i class="fas fa-user-circle"></i>
-                                                        <span>
-                                                            <%= post.author.name %>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    </div>
                                 </div>
                             </div>
                             <% }); %>
@@ -156,8 +153,8 @@
                                 <div class="list-group list-group-flush">
                                     <% const categories=[...new Set(posts.map(post=> post.category))]; %>
                                         <% categories.forEach(category=> { %>
-                                            <a href="/categories/<%= category.slug %>"
-                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                                            <a href="/posts?category=<%= category.id %>"
+                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <i class="fas fa-folder text-primary"></i>
                                                     <%= category.name %>
@@ -172,40 +169,45 @@
 
                             <!-- Popular Posts -->
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header d-flex align-items-center gap-2">
                                     <i class="fas fa-fire"></i>
                                     <span>Bài viết nổi bật</span>
                                 </div>
                                 <div class="list-group list-group-flush">
-                                    <% posts.slice(0, 5).forEach(post=> { %>
-                                        <a href="/posts/<%= post.slug %>"
-                                            class="list-group-item list-group-item-action py-3">
-                                            <div class="d-flex gap-3">
+                                    <% if (popularPosts && popularPosts.length > 0) { %>
+                                        <% popularPosts.forEach(post => { %>
+                                            <a href="/posts/<%= post.slug %>"
+                                                class="list-group-item list-group-item-action py-3">
                                                 <% if (post.thumbnail) { %>
-                                                    <img src="<%= post.thumbnail %>" class="rounded" width="64"
-                                                        height="64" style="object-fit: cover;" alt="<%= post.title %>">
-                                                    <% } %>
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="mb-1 text-truncate hover-primary">
-                                                                <%= post.title %>
-                                                            </h6>
-                                                            <div
-                                                                class="d-flex align-items-center gap-3 text-muted small">
-                                                                <span>
-                                                                    <i class="far fa-clock"></i>
-                                                                    <%= new
-                                                                        Date(post.createdAt).toLocaleDateString('vi-VN')
-                                                                        %>
-                                                                </span>
-                                                                <span>
-                                                                    <i class="far fa-comment"></i>
-                                                                    <%= post._count.comments %>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                            </div>
-                                        </a>
+                                                    <img src="<%= post.thumbnail %>" class="popular-thumb" alt="<%= post.title %>" onerror="this.src='https://via.placeholder.com/56x56?text=No+Image'">
+                                                <% } else { %>
+                                                    <img src="https://via.placeholder.com/56x56?text=No+Image" class="popular-thumb" alt="No image">
+                                                <% } %>
+                                                <div class="flex-grow-1">
+                                                    <span class="popular-title" title="<%= post.title %>"><%= post.title %></span>
+                                                    <div class="popular-meta">
+                                                        <span>
+                                                            <i class="far fa-clock"></i>
+                                                            <%= new Date(post.createdAt).toLocaleDateString('vi-VN') %>
+                                                        </span>
+                                                        <span>
+                                                            <i class="far fa-comment"></i>
+                                                            <%= post._count.comments %>
+                                                        </span>
+                                                        <span>
+                                                            <i class="far fa-eye"></i>
+                                                            <%= post.views %>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
                                         <% }); %>
+                                    <% } else { %>
+                                        <div class="list-group-item text-center text-muted py-4">
+                                            <i class="fas fa-newspaper fa-2x mb-2"></i>
+                                            <div>Chưa có bài viết nào</div>
+                                        </div>
+                                    <% } %>
                                 </div>
                             </div>
 
@@ -220,20 +222,6 @@
                                         Blog lập trình - Nơi chia sẻ kiến thức, tin tức và hướng dẫn về lập trình, công
                                         nghệ và phát triển phần mềm.
                                     </p>
-                                    <div class="d-flex justify-content-center gap-3">
-                                        <a href="#" class="btn btn-outline-primary btn-sm">
-                                            <i class="fab fa-facebook"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-outline-info btn-sm">
-                                            <i class="fab fa-twitter"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-outline-danger btn-sm">
-                                            <i class="fab fa-youtube"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-outline-dark btn-sm">
-                                            <i class="fab fa-github"></i>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -260,6 +248,7 @@
 
         .post-card {
             transition: var(--transition);
+            margin-bottom: 1.5rem;
         }
 
         .post-thumb {
@@ -269,6 +258,10 @@
         .list-group-item {
             border: none;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-height: 50px;
         }
 
         .list-group-item:hover {
@@ -283,24 +276,32 @@
             transform: scale(1.1);
         }
 
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            .featured-post {
-                background: var(--gray-100);
-            }
+        .popular-thumb {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            background: var(--gray-200);
+            flex-shrink: 0;
+        }
 
-            .list-group-item {
-                background: var(--gray-100);
-                color: var(--gray-800);
-            }
+        .popular-title {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 275px;
+            display: block;
+        }
 
-            .list-group-item:hover {
-                background: var(--gray-200);
-            }
-
-            .text-muted {
-                color: var(--gray-500) !important;
-            }
+        .popular-meta {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
     </style>
 

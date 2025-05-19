@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   password  String
   name      String
-  role      Role     @default(USER)
+  role      Role      @default(USER)
   posts     Post[]
   comments  Comment[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Post {
@@ -27,7 +27,7 @@ model Post {
   title      String
   slug       String    @unique
   content    String    @db.Text
-  thumbnail  String?   // URL to the post's thumbnail image
+  thumbnail  String? // URL to the post's thumbnail image
   published  Boolean   @default(false)
   author     User      @relation(fields: [authorId], references: [id])
   authorId   Int
@@ -36,16 +36,17 @@ model Post {
   comments   Comment[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  views      Int       @default(0)
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  slug        String    @unique
-  description String?   @db.Text
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
   posts       Post[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Comment {
@@ -62,4 +63,4 @@ model Comment {
 enum Role {
   USER
   ADMIN
-} 
+}

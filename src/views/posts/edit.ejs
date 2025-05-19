@@ -4,20 +4,20 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title mb-0">Edit Post</h4>
+                    <h4 class="card-title mb-0">Chỉnh sửa bài viết</h4>
                 </div>
                 <div class="card-body">
                     <form action="/posts/<%= post.slug %>?_method=PUT" method="POST">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
+                            <label for="title" class="form-label">Tiêu đề</label>
                             <input type="text" class="form-control" id="title" name="title" value="<%= post.title %>"
                                 required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="categoryId" class="form-label">Category</label>
+                            <label for="categoryId" class="form-label">Danh mục</label>
                             <select class="form-select" id="categoryId" name="categoryId" required>
-                                <option value="">Select a category</option>
+                                <option value="">Chọn danh mục</option>
                                 <% categories.forEach(category=> { %>
                                     <option value="<%= category.id %>" <%=category.id===post.categoryId ? 'selected'
                                         : '' %>>
@@ -28,20 +28,20 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="content" class="form-label">Content</label>
+                            <label for="content" class="form-label">Nội dung</label>
                             <textarea class="form-control" id="content" name="content" rows="10"
                                 required><%= post.content %></textarea>
                         </div>
 
-                        <div class="mb-3 form-check">
+                        <div class="mb-3 form-check" style="display: none;">
                             <input type="checkbox" class="form-check-input" id="published" name="published"
                                 <%=post.published ? 'checked' : '' %>>
-                            <label class="form-check-label" for="published">Published</label>
+                            <label class="form-check-label" for="published">Đăng ngay</label>
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="/posts/<%= post.slug %>" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Update Post</button>
+                            <a href="/posts/<%= post.slug %>" class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
                         </div>
                     </form>
                 </div>

@@ -1,21 +1,21 @@
 <%- include('../partials/header') %>
 
-    <div class="row">
+    <div class="row wrapper-container">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-cog me-2"></i>Quản lý chuyên mục
+            <div class="card shadow mb-4" style="border-radius: var(--radius-lg);">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--gradient-primary); color: #fff; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
+                    <h4 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-cog me-2" style="color: #fff; background: rgba(0,0,0,0.08); padding: 0.5rem; border-radius: var(--radius);"></i>Quản lý chuyên mục
                     </h4>
-                    <a href="/categories/new" class="btn btn-primary">
+                    <a href="/categories/new" class="btn btn-gradient">
                         <i class="fas fa-plus me-2"></i>Thêm chuyên mục
                     </a>
                 </div>
                 <div class="card-body">
                     <% if (categories && categories.length> 0) { %>
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover align-middle" style="border-radius: var(--radius); overflow: hidden;">
+                                <thead class="table-light">
                                     <tr>
                                         <th>Tên chuyên mục</th>
                                         <th>Slug</th>
@@ -34,7 +34,7 @@
                                                     <%= category.name %>
                                                 </div>
                                             </td>
-                                            <td><code><%= category.slug %></code></td>
+                                            <td><code style="background: var(--gray-200); color: var(--primary); border-radius: 4px; padding: 0.2rem 0.5rem;"> <%= category.slug %> </code></td>
                                             <td>
                                                 <% if (category.description) { %>
                                                     <%= category.description.substring(0, 50) %>...
@@ -43,7 +43,7 @@
                                                             <% } %>
                                             </td>
                                             <td>
-                                                <span class="badge bg-primary">
+                                                <span class="badge bg-primary" style="background: var(--gradient-primary) !important; color: #fff;">
                                                     <%= category._count?.posts || 0 %>
                                                 </span>
                                             </td>
@@ -56,50 +56,12 @@
                                                         class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal<%= category.id %>" title="Xóa">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-
-                                                <!-- Delete Modal -->
-                                                <div class="modal fade" id="deleteModal<%= category.id %>"
-                                                    tabindex="-1">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Xác nhận xóa</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p>Bạn có chắc chắn muốn xóa chuyên mục "<%=
-                                                                        category.name %>"?</p>
-                                                                <% if (category._count?.posts> 0) { %>
-                                                                    <div class="alert alert-warning">
-                                                                        <i class="fas fa-exclamation-triangle me-2"></i>
-                                                                        Chuyên mục này có <%= category._count.posts %>
-                                                                            bài viết.
-                                                                            Việc xóa sẽ ảnh hưởng đến các bài viết này.
-                                                                    </div>
-                                                                    <% } %>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">
-                                                                    <i class="fas fa-times me-2"></i>Hủy
-                                                                </button>
-                                                                <form
-                                                                    action="/categories/<%= category.slug %>?_method=DELETE"
-                                                                    method="POST" class="d-inline">
-                                                                    <button type="submit" class="btn btn-danger">
-                                                                        <i class="fas fa-trash me-2"></i>Xóa
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <form action="/categories/<%= category.slug %>?_method=DELETE" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa chuyên mục này?');">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -112,7 +74,7 @@
                                 <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
                                 <h5>Chưa có chuyên mục nào</h5>
                                 <p class="text-muted">Hãy thêm chuyên mục đầu tiên của bạn!</p>
-                                <a href="/categories/new" class="btn btn-primary mt-3">
+                                <a href="/categories/new" class="btn btn-gradient mt-3">
                                     <i class="fas fa-plus me-2"></i>Thêm chuyên mục
                                 </a>
                             </div>
@@ -123,11 +85,18 @@
     </div>
 
     <style>
-        .card {
+         .wrapper-container {
+            min-height: calc(100vh - 440px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+.card {
             border: none;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            background: white;
+            background: white !important;
             transition: var(--transition);
         }
 

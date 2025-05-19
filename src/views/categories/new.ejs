@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center wrapper-container">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
@@ -12,27 +12,19 @@
                     <form action="/categories" method="POST" class="needs-validation" novalidate>
                         <div class="mb-4">
                             <label for="name" class="form-label">Tên chuyên mục</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-folder"></i>
-                                </span>
+                          
                                 <input type="text" class="form-control" id="name" name="name" required
                                     placeholder="Nhập tên chuyên mục">
                                 <div class="invalid-feedback">
                                     Vui lòng nhập tên chuyên mục
                                 </div>
-                            </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="description" class="form-label">Mô tả</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-align-left"></i>
-                                </span>
+                          
                                 <textarea class="form-control" id="description" name="description" rows="4"
                                     placeholder="Nhập mô tả cho chuyên mục"></textarea>
-                            </div>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center">
@@ -112,31 +104,13 @@
             letter-spacing: 0.5px;
         }
 
-        @media (prefers-color-scheme: dark) {
-            .card {
-                background: #2d2d2d;
-            }
-
-            .form-label {
-                color: var(--text-color);
-            }
-
-            .input-group-text {
-                background: #333;
-                color: var(--accent-color);
-            }
-
-            .form-control {
-                background: #333;
-                border-color: #444;
-                color: var(--text-color);
-            }
-
-            .form-control:focus {
-                background: #333;
-                color: var(--text-color);
-            }
+        .wrapper-container {
+            min-height: calc(100vh - 440px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
     </style>
 
     <script>

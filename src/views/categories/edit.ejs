@@ -1,11 +1,11 @@
 <%- include('../partials/header') %>
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center wrapper-container">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="fas fa-edit me-2"></i>Chỉnh sửa chuyên mục
+                <div class="card-header" style="background: linear-gradient(45deg, var(--primary-color), var(--primary-dark)); color: white; border-radius: var(--border-radius) var(--border-radius) 0 0 !important; padding: 1.5rem;">
+                    <h4 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-edit me-2" style="color: #fff;"></i>Chỉnh sửa chuyên mục
                     </h4>
                 </div>
                 <div class="card-body">
@@ -13,17 +13,13 @@
                         novalidate>
                         <div class="mb-4">
                             <label for="name" class="form-label">Tên chuyên mục</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-folder"></i>
-                                </span>
+                          
                                 <input type="text" class="form-control" id="name" name="name"
                                     value="<%= category.name %>" required pattern="[A-Za-zÀ-ỹ\s]+" minlength="2"
                                     maxlength="50">
                                 <div class="invalid-feedback">
                                     Vui lòng nhập tên chuyên mục (2-50 ký tự, chỉ chữ cái và dấu cách)
                                 </div>
-                            </div>
                             <small class="form-text text-muted">
                                 Tên chuyên mục sẽ được tự động chuyển thành slug URL
                             </small>
@@ -31,13 +27,9 @@
 
                         <div class="mb-4">
                             <label for="description" class="form-label">Mô tả</label>
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-align-left"></i>
-                                </span>
+                          
                                 <textarea class="form-control" id="description" name="description" rows="4"
                                     maxlength="200"><%= category.description %></textarea>
-                            </div>
                             <small class="form-text text-muted">
                                 Mô tả ngắn gọn về chuyên mục (tối đa 200 ký tự)
                             </small>
@@ -58,6 +50,13 @@
     </div>
 
     <style>
+ .wrapper-container {
+            min-height: calc(100vh - 440px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .card {
             border: none;
             border-radius: var(--border-radius);
@@ -85,31 +84,32 @@
             margin-bottom: 0.5rem;
         }
 
+        .input-group {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
         .input-group-text {
             background: var(--light-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
+            border: none;
+            color: var(--primary-color);
         }
 
         .form-control {
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
             font-size: 1rem;
             transition: var(--transition);
         }
 
         .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(26, 35, 126, 0.15);
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
         }
 
-        .form-control.is-invalid {
-            border-color: var(--danger-color);
-            background-image: none;
-        }
-
-        .form-control.is-invalid:focus {
-            box-shadow: 0 0 0 0.2rem rgba(var(--danger-rgb), 0.25);
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
         }
 
         .form-text {
@@ -118,71 +118,10 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 1.8rem;
             font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
-            border: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(var(--primary-rgb), 0.3);
-        }
-
-        .btn-outline-secondary {
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-outline-secondary:hover {
-            background: var(--light-bg);
-            border-color: var(--text-light);
-            transform: translateY(-2px);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .card {
-                background: #2d2d2d;
-            }
-
-            .form-label {
-                color: var(--text-color);
-            }
-
-            .input-group-text {
-                background: #333;
-                border-color: #444;
-                color: var(--text-light);
-            }
-
-            .form-control {
-                background: #333;
-                border-color: #444;
-                color: var(--text-color);
-            }
-
-            .form-control:focus {
-                background: #333;
-                color: var(--text-color);
-            }
-
-            .form-text {
-                color: var(--text-light);
-            }
-
-            .btn-outline-secondary {
-                border-color: #444;
-                color: var(--text-color);
-            }
-
-            .btn-outline-secondary:hover {
-                background: #333;
-                border-color: var(--text-light);
-                color: var(--text-color);
-            }
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
     </style>
 
@@ -190,9 +129,9 @@
         // Form validation
         (function () {
             'use strict'
-            const forms = document.querySelectorAll('.needs-validation')
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
                     if (!form.checkValidity()) {
                         event.preventDefault()
                         event.stopPropagation()
