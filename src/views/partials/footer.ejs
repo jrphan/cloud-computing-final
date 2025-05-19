@@ -1,0 +1,242 @@
+</div>
+
+<!-- Footer -->
+<footer class="footer-glass mt-5 pt-5 pb-3">
+    <div class="container">
+        <div class="row gy-5 align-items-center">
+            <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0">
+                <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-3 mb-2">
+                    <span class="footer-logo-glow"><i class="fas fa-code"></i></span>
+                    <span class="fs-3 fw-bold text-gradient">Tech Blog</span>
+                </div>
+                <div class="footer-slogan mb-3">Nơi chia sẻ kiến thức lập trình, công nghệ và sáng tạo phần mềm.</div>
+                <div class="d-flex justify-content-center justify-content-lg-start gap-3 mb-2">
+                    <a href="#" class="footer-social-glow" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-social-glow" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-social-glow" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="footer-social-glow" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center mb-4 mb-lg-0">
+                <h6 class="mb-3 fw-semibold text-uppercase text-gradient">Liên kết nhanh</h6>
+                <div class="row g-2 justify-content-center">
+                    <div class="col-6 col-md-12">
+                        <a href="/" class="footer-link-glass"><i class="fas fa-home me-2"></i>Trang chủ</a>
+                    </div>
+                    <div class="col-6 col-md-12">
+                        <a href="/categories/web-development" class="footer-link-glass"><i
+                                class="fas fa-globe me-2"></i>Web Development</a>
+                    </div>
+                    <div class="col-6 col-md-12">
+                        <a href="/categories/ai-machine-learning" class="footer-link-glass"><i
+                                class="fas fa-robot me-2"></i>AI & Machine Learning</a>
+                    </div>
+                    <div class="col-6 col-md-12">
+                        <a href="/categories/devops-cloud" class="footer-link-glass"><i
+                                class="fas fa-cloud me-2"></i>DevOps & Cloud</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <h6 class="mb-3 fw-semibold text-uppercase text-gradient">Liên hệ</h6>
+                <ul class="list-unstyled mb-2 footer-contact-list">
+                    <li class="mb-2"><span class="footer-contact-icon email"><i
+                                class="fas fa-envelope"></i></span>contact@techblog.com</li>
+                    <li class="mb-2"><span class="footer-contact-icon phone"><i class="fas fa-phone"></i></span>+84 123
+                        456 789</li>
+                    <li class="mb-2"><span class="footer-contact-icon map"><i
+                                class="fas fa-map-marker-alt"></i></span>Hà Nội, Việt Nam</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4 bg-secondary opacity-25">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                <span class="text-muted small">&copy; 2024 Tech Blog. All rights reserved.</span>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="footer-link-glass me-3">Điều khoản sử dụng</a>
+                <a href="#" class="footer-link-glass">Chính sách bảo mật</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer-glass {
+        background: #181c2a;
+        color: #e2e8f0;
+        border-radius: 2.5rem 2.5rem 0 0;
+        box-shadow: 0 -4px 32px 0 rgb(59 130 246 / 0.10);
+        margin-top: 4rem;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .text-gradient {
+        background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .footer-logo-glow {
+        font-size: 2.2rem;
+        color: #fff;
+        background: linear-gradient(120deg, #3b82f6 40%, #06b6d4 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 16px 2px #3b82f6, 0 0 32px 4px #06b6d4;
+        padding: 0.4rem 0.7rem;
+        animation: glow 2.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        0% {
+            box-shadow: 0 0 16px 2px #3b82f6, 0 0 32px 4px #06b6d4;
+        }
+
+        100% {
+            box-shadow: 0 0 32px 8px #06b6d4, 0 0 48px 12px #3b82f6;
+        }
+    }
+
+    .footer-slogan {
+        font-size: 1.05rem;
+        color: #b6c3e0;
+        font-style: italic;
+        letter-spacing: 0.01em;
+    }
+
+    .footer-social-glow {
+        color: #b6c3e0;
+        font-size: 1.35rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 2px 8px 0 rgb(59 130 246 / 0.10);
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        margin-right: 0.1rem;
+    }
+
+    .footer-social-glow:hover {
+        color: #fff;
+        background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+        box-shadow: 0 4px 16px 0 #3b82f6, 0 0 32px 4px #06b6d4;
+        transform: translateY(-2px) scale(1.08);
+    }
+
+    .footer-link-glass {
+        color: #b6c3e0;
+        text-decoration: none;
+        font-size: 1.08rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        display: inline-block;
+        margin-bottom: 0.3rem;
+        transition: color 0.2s, text-shadow 0.2s, background 0.2s;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .footer-link-glass:hover {
+        color: #fff;
+        text-shadow: 0 2px 8px #3b82f6;
+        background: rgba(59, 130, 246, 0.08);
+        text-decoration: underline;
+    }
+
+    .footer-contact-list {
+        padding-left: 0;
+        font-size: 1.05rem;
+    }
+
+    .footer-contact-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        margin-right: 0.6rem;
+        font-size: 1.1rem;
+        background: rgba(59, 130, 246, 0.12);
+        color: #3b82f6;
+        box-shadow: 0 1px 4px 0 rgb(59 130 246 / 0.10);
+    }
+
+    .footer-contact-icon.phone {
+        background: rgba(34, 197, 94, 0.12);
+        color: #22c55e;
+    }
+
+    .footer-contact-icon.map {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+    }
+
+    .footer-glass hr {
+        border-top: 1px solid #b6c3e0;
+        opacity: 0.15;
+    }
+
+    @media (max-width: 991.98px) {
+        .footer-glass {
+            border-radius: 1.25rem 1.25rem 0 0;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .footer-glass .row>div {
+            text-align: center !important;
+        }
+
+        .footer-logo-glow {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-hide flash messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+    // Confirm delete actions
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteForms = document.querySelectorAll('form[data-confirm]');
+        deleteForms.forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                if (!confirm(this.dataset.confirm)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+    // Active nav link
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

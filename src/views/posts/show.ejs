@@ -1,0 +1,334 @@
+<%- include('../partials/header') %>
+
+    <div class="container py-4">
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <div class="card border-0">
+                    <% if (post.thumbnail) { %>
+                        <img src="<%= post.thumbnail %>" class="post-thumbnail" alt="<%= post.title %>">
+                        <% } %>
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <span class="badge bg-primary">
+                                        <%= post.category.name %>
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="far fa-clock"></i>
+                                        <%= new Date(post.createdAt).toLocaleDateString('vi-VN') %>
+                                    </small>
+                                </div>
+                                <h1 class="h2 mb-3">
+                                    <%= post.title %>
+                                </h1>
+                                <div class="d-flex align-items-center gap-3 mb-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fas fa-user-circle text-primary"></i>
+                                        <span>
+                                            <%= post.author.name %>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="far fa-comment text-primary"></i>
+                                        <span>
+                                            <%= post._count.comments %> bình luận
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="post-content mb-4">
+                                    <%- post.content %>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <a href="/posts" class="btn btn-outline-primary">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Quay lại
+                                    </a>
+                                    <% if (locals.user && (user.id===post.authorId || user.role==='ADMIN' )) { %>
+                                        <a href="/posts/<%= post.slug %>/edit" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                            Chỉnh sửa
+                                        </a>
+                                        <form action="/posts/<%= post.slug %>?_method=DELETE" method="POST"
+                                            class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
+                                                <i class="fas fa-trash"></i>
+                                                Xóa
+                                            </button>
+                                        </form>
+                                        <% } %>
+                                </div>
+                            </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="card mt-4 border-0">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="far fa-comments"></i>
+                        <span>Bình luận (<%= post._count.comments %>)</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <% if (locals.user) { %>
+                            <form action="/posts/<%= post.slug %>/comments" method="POST" class="mb-4">
+                                <div class="mb-3">
+                                    <textarea name="content" class="form-control" rows="3"
+                                        placeholder="Viết bình luận của bạn..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Gửi bình luận
+                                </button>
+                            </form>
+                            <% } else { %>
+                                <div class="alert alert-info mb-4">
+                                    <i class="fas fa-info-circle"></i>
+                                    Vui lòng <a href="/login" class="alert-link">đăng nhập</a> để bình luận.
+                                </div>
+                                <% } %>
+
+                                    <div class="comments-list">
+                                        <% if (post.comments && post.comments.length> 0) { %>
+                                            <% post.comments.forEach(function(comment) { %>
+                                                <div class="comment-item mb-4">
+                                                    <div class="d-flex gap-3">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center mb-2">
+                                                                <div>
+                                                                    <h6 class="mb-0">
+                                                                        <%= comment.author.name %>
+                                                                    </h6>
+                                                                    <small class="text-muted">
+                                                                        <i class="far fa-clock"></i>
+                                                                        <%= new
+                                                                            Date(comment.createdAt).toLocaleDateString('vi-VN')
+                                                                            %>
+                                                                    </small>
+                                                                </div>
+                                                                <% if (locals.user && (user.id===comment.authorId ||
+                                                                    user.role==='ADMIN' )) { %>
+                                                                    <form
+                                                                        action="/posts/<%= post.slug %>/comments/<%= comment.id %>?_method=DELETE"
+                                                                        method="POST" class="d-inline">
+                                                                        <button type="submit"
+                                                                            class="btn btn-link text-danger p-0"
+                                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                    <% } %>
+                                                            </div>
+                                                            <p class="mb-0">
+                                                                <%= comment.content %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                                    <% } else { %>
+                                                        <div class="text-center text-muted py-4">
+                                                            <i class="far fa-comment-dots fa-3x mb-3"></i>
+                                                            <p class="mb-0">Chưa có bình luận nào. Hãy là người đầu tiên
+                                                                bình luận!</p>
+                                                        </div>
+                                                        <% } %>
+                                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Author Info -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-user"></i>
+                        <span>Tác giả</span>
+                    </div>
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                        <h5 class="mb-2">
+                            <%= post.author.name %>
+                        </h5>
+                        <p class="text-muted small mb-3">
+                            <%= post.author.email %>
+                        </p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-info btn-sm">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Posts -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-link"></i>
+                        <span>Bài viết liên quan</span>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <% const relatedPosts=posts.filter(p=>
+                            p.categoryId === post.categoryId && p.id !== post.id
+                            ).slice(0, 3); %>
+                            <% if (relatedPosts.length> 0) { %>
+                                <% relatedPosts.forEach(function(relatedPost) { %>
+                                    <a href="/posts/<%= relatedPost.slug %>"
+                                        class="list-group-item list-group-item-action py-3">
+                                        <div class="d-flex gap-3">
+                                            <% if (relatedPost.thumbnail) { %>
+                                                <img src="<%= relatedPost.thumbnail %>" class="rounded" width="64"
+                                                    height="64" style="object-fit: cover;"
+                                                    alt="<%= relatedPost.title %>">
+                                                <% } %>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1 text-truncate">
+                                                            <%= relatedPost.title %>
+                                                        </h6>
+                                                        <div class="d-flex align-items-center gap-2 text-muted small">
+                                                            <span><i class="far fa-clock"></i>
+                                                                <%= new
+                                                                    Date(relatedPost.createdAt).toLocaleDateString('vi-VN')
+                                                                    %>
+                                                            </span>
+                                                            <span><i class="far fa-comment"></i>
+                                                                <%= relatedPost._count.comments %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                        </div>
+                                    </a>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="list-group-item py-3 text-center text-muted">
+                                                <i class="fas fa-info-circle mb-2"></i>
+                                                <p class="mb-0">Không có bài viết liên quan</p>
+                                            </div>
+                                            <% } %>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="card">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fas fa-tags"></i>
+                        <span>Chuyên mục</span>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <% const categories=[...new Set(posts.map(p=> p.category))]; %>
+                            <% categories.forEach(category=> { %>
+                                <a href="/categories/<%= category.slug %>"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fas fa-folder text-primary"></i>
+                                        <%= category.name %>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <%= posts.filter(p=> p.categoryId === category.id).length %>
+                                    </span>
+                                </a>
+                                <% }); %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .post-thumbnail {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--gray-700);
+        }
+
+        .post-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        .post-content pre {
+            background: var(--gray-100);
+            padding: 1rem;
+            border-radius: var(--radius);
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .post-content code {
+            background: var(--gray-100);
+            padding: 0.2rem 0.4rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.9em;
+        }
+
+        .comment-item {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .post-content {
+                color: var(--gray-300);
+            }
+
+            .post-content pre,
+            .post-content code {
+                background: var(--gray-800);
+            }
+
+            .comment-item {
+                border-color: var(--gray-700);
+            }
+
+            .btn-outline-primary {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+            .btn-outline-primary:hover {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: var(--gray-900);
+            }
+        }
+    </style>
+
+    <%- include('../partials/footer') %>

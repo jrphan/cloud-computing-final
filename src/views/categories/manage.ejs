@@ -1,0 +1,253 @@
+<%- include('../partials/header') %>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-cog me-2"></i>Quản lý chuyên mục
+                    </h4>
+                    <a href="/categories/new" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Thêm chuyên mục
+                    </a>
+                </div>
+                <div class="card-body">
+                    <% if (categories && categories.length> 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tên chuyên mục</th>
+                                        <th>Slug</th>
+                                        <th>Mô tả</th>
+                                        <th>Số bài viết</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% categories.forEach(category=> { %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-folder text-primary me-2"></i>
+                                                    <%= category.name %>
+                                                </div>
+                                            </td>
+                                            <td><code><%= category.slug %></code></td>
+                                            <td>
+                                                <% if (category.description) { %>
+                                                    <%= category.description.substring(0, 50) %>...
+                                                        <% } else { %>
+                                                            <span class="text-muted">Không có mô tả</span>
+                                                            <% } %>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">
+                                                    <%= category._count?.posts || 0 %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <%= new Date(category.createdAt).toLocaleDateString('vi-VN') %>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="/categories/<%= category.slug %>/edit"
+                                                        class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal<%= category.id %>" title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Delete Modal -->
+                                                <div class="modal fade" id="deleteModal<%= category.id %>"
+                                                    tabindex="-1">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Xác nhận xóa</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Bạn có chắc chắn muốn xóa chuyên mục "<%=
+                                                                        category.name %>"?</p>
+                                                                <% if (category._count?.posts> 0) { %>
+                                                                    <div class="alert alert-warning">
+                                                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                                                        Chuyên mục này có <%= category._count.posts %>
+                                                                            bài viết.
+                                                                            Việc xóa sẽ ảnh hưởng đến các bài viết này.
+                                                                    </div>
+                                                                    <% } %>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                    <i class="fas fa-times me-2"></i>Hủy
+                                                                </button>
+                                                                <form
+                                                                    action="/categories/<%= category.slug %>?_method=DELETE"
+                                                                    method="POST" class="d-inline">
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        <i class="fas fa-trash me-2"></i>Xóa
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } else { %>
+                            <div class="text-center py-5">
+                                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                <h5>Chưa có chuyên mục nào</h5>
+                                <p class="text-muted">Hãy thêm chuyên mục đầu tiên của bạn!</p>
+                                <a href="/categories/new" class="btn btn-primary mt-3">
+                                    <i class="fas fa-plus me-2"></i>Thêm chuyên mục
+                                </a>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            background: white;
+            transition: var(--transition);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: var(--text-color);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transform: translateX(5px);
+        }
+
+        .btn-group .btn {
+            padding: 0.5rem;
+            margin: 0 0.2rem;
+        }
+
+        .btn-group .btn i {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        code {
+            background: var(--light-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            border: none;
+        }
+
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .card {
+                background: #2d2d2d;
+            }
+
+            .table th {
+                color: var(--text-light);
+                border-bottom-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .table td {
+                color: var(--text-color);
+            }
+
+            .table tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            code {
+                background: #333;
+                color: var(--accent-color);
+            }
+
+            .modal-content {
+                background: #2d2d2d;
+                color: var(--text-color);
+            }
+
+            .alert-warning {
+                background: rgba(245, 124, 0, 0.1);
+                border-color: var(--warning-color);
+                color: var(--warning-color);
+            }
+        }
+    </style>
+
+    <%- include('../partials/footer') %>
