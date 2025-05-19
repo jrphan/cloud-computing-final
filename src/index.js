@@ -157,6 +157,7 @@ app.get("/", async (req, res) => {
             select: { comments: true },
           },
         },
+        take: 7,
         orderBy: { createdAt: "desc" },
       }),
       prisma.post.findMany({
