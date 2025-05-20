@@ -108,31 +108,14 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Authentication middleware
+// Middleware xác thực dùng session
 const authenticateToken = (req, res, next) => {
-  const token =
-    req.cookies.token || req.headers["authorization"]?.split(" ")[1];
-
-  if (!token) {
-    if (req.xhr || req.headers.accept.includes("application/json")) {
-      return res.status(401).json({ error: "Access token required" });
-    }
+  if (!req.session.user) {
     req.flash("error_msg", "Please login to access this resource");
     return res.redirect("/login");
   }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      if (req.xhr || req.headers.accept.includes("application/json")) {
-        return res.status(403).json({ error: "Invalid token" });
-      }
-      req.flash("error_msg", "Session expired. Please login again");
-      return res.redirect("/login");
-    }
-    req.user = user;
-    req.session.user = user;
-    next();
-  });
+  req.user = req.session.user;
+  next();
 };
 
 // Admin middleware
@@ -268,13 +251,7 @@ app.post(
         },
       });
 
-      const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET
-      );
-      res.cookie("token", token, { httpOnly: true });
       req.session.user = { id: user.id, email: user.email, role: user.role };
-
       req.flash("success_msg", "Registration successful!");
       res.redirect("/");
     } catch (error) {
@@ -311,13 +288,7 @@ app.post(
         return res.redirect("/login");
       }
 
-      const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET
-      );
-      res.cookie("token", token, { httpOnly: true });
       req.session.user = { id: user.id, email: user.email, role: user.role };
-
       req.flash("success_msg", "Login successful!");
       res.redirect("/");
     } catch (error) {
@@ -328,7 +299,6 @@ app.post(
 );
 
 app.get("/logout", (req, res) => {
-  res.clearCookie("token");
   req.session.destroy();
   res.redirect("/");
 });
