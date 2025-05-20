@@ -20,6 +20,8 @@ const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 // AWS S3 Configuration
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -72,7 +74,11 @@ app.use(
     secret: process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" },
+    cookie: {
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000
+    },
   })
 );
 
