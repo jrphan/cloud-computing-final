@@ -148,64 +148,73 @@
 
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <!-- Author Info -->
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center gap-2">
-                        <i class="fas fa-user"></i>
-                        <span>Tác giả</span>
+                <div class="sidebar-sticky">
+                    <!-- Author Info -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex align-items-center gap-2">
+                            <i class="fas fa-user"></i>
+                            <span>Tác giả</span>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                            <h5 class="mb-2">
+                                <%= post.author.name %>
+                            </h5>
+                            <p class="text-muted small mb-3">
+                                <%= post.author.email %>
+                            </p>
+                        </div>
                     </div>
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
-                        <h5 class="mb-2">
-                            <%= post.author.name %>
-                        </h5>
-                        <p class="text-muted small mb-3">
-                            <%= post.author.email %>
-                        </p>
+
+                    <!-- Related Posts -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex align-items-center gap-2">
+                            <i class="fas fa-link"></i>
+                            <span>Bài viết liên quan</span>
+                        </div>
+                        <div class="list-group list-group-flush related-list">
+                            <% const relatedPosts=posts.filter(p=>
+                                p.categoryId === post.categoryId && p.id !== post.id
+                                ).slice(0, 4); %>
+                                <% if (relatedPosts.length> 0) { %>
+                                    <% relatedPosts.forEach(function(relatedPost) { %>
+                                        <a href="/posts/<%= relatedPost.slug %>"
+                                            class="list-group-item list-group-item-action py-3">
+                                            <% if (relatedPost.thumbnail) { %>
+                                                <img src="<%= relatedPost.thumbnail %>" class="related-thumb"
+                                                    alt="<%= relatedPost.title %>"
+                                                    onerror="this.src='https://via.placeholder.com/56x56?text=No+Image'">
+                                                <% } else { %>
+                                                    <img src="https://via.placeholder.com/56x56?text=No+Image"
+                                                        class="related-thumb" alt="No image">
+                                                    <% } %>
+                                                        <div class="flex-grow-1">
+                                                            <span class="related-title"
+                                                                title="<%= relatedPost.title %>">
+                                                                <%= relatedPost.title %>
+                                                            </span>
+                                                            <div class="related-meta">
+                                                                <span><i class="far fa-clock"></i>
+                                                                    <%= new
+                                                                        Date(relatedPost.createdAt).toLocaleDateString('vi-VN')
+                                                                        %>
+                                                                </span>
+                                                                <span><i class="far fa-comment"></i>
+                                                                    <%= relatedPost._count.comments %>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                        </a>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <div class="list-group-item py-3 text-center text-muted">
+                                                    <i class="fas fa-info-circle mb-2"></i>
+                                                    <p class="mb-0">Không có bài viết liên quan</p>
+                                                </div>
+                                                <% } %>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Related Posts -->
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center gap-2">
-                        <i class="fas fa-link"></i>
-                        <span>Bài viết liên quan</span>
-                    </div>
-                    <div class="list-group list-group-flush related-list">
-                        <% const relatedPosts=posts.filter(p=>
-                            p.categoryId === post.categoryId && p.id !== post.id
-                            ).slice(0, 3); %>
-                        <% if (relatedPosts.length> 0) { %>
-                            <% relatedPosts.forEach(function(relatedPost) { %>
-                                <a href="/posts/<%= relatedPost.slug %>"
-                                    class="list-group-item list-group-item-action py-3">
-                                    <% if (relatedPost.thumbnail) { %>
-                                        <img src="<%= relatedPost.thumbnail %>" class="related-thumb" alt="<%= relatedPost.title %>" onerror="this.src='https://via.placeholder.com/56x56?text=No+Image'">
-                                    <% } else { %>
-                                        <img src="https://via.placeholder.com/56x56?text=No+Image" class="related-thumb" alt="No image">
-                                    <% } %>
-                                    <div class="flex-grow-1">
-                                        <span class="related-title" title="<%= relatedPost.title %>"><%= relatedPost.title %></span>
-                                        <div class="related-meta">
-                                            <span><i class="far fa-clock"></i>
-                                                <%= new Date(relatedPost.createdAt).toLocaleDateString('vi-VN') %>
-                                            </span>
-                                            <span><i class="far fa-comment"></i>
-                                                <%= relatedPost._count.comments %>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="list-group-item py-3 text-center text-muted">
-                                <i class="fas fa-info-circle mb-2"></i>
-                                <p class="mb-0">Không có bài viết liên quan</p>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -308,6 +317,7 @@
             align-items: center;
             gap: 0.75rem;
         }
+
         .card-header i {
             background: var(--gradient-card);
             color: var(--primary);
@@ -318,6 +328,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .related-list .list-group-item {
             border: none;
             display: flex;
@@ -329,13 +340,16 @@
             margin-bottom: 0.5rem;
             background: transparent;
         }
+
         .related-list .list-group-item:last-child {
             margin-bottom: 0;
         }
+
         .related-list .list-group-item:hover {
             background: var(--gradient-card);
             box-shadow: var(--shadow-sm);
         }
+
         .related-thumb {
             width: 56px;
             height: 56px;
@@ -344,6 +358,7 @@
             background: var(--gray-200);
             flex-shrink: 0;
         }
+
         .related-title {
             margin-bottom: 0.25rem;
             font-size: 1rem;
@@ -355,6 +370,7 @@
             display: block;
             color: var(--gray-900);
         }
+
         .related-meta {
             font-size: 0.9rem;
             color: var(--gray-500);
@@ -362,9 +378,17 @@
             gap: 1rem;
             align-items: center;
         }
+
         /* Remove selection highlight for header */
-        .card-header span, .card-header i {
+        .card-header span,
+        .card-header i {
             user-select: none;
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 32px;
+            z-index: 2;
         }
     </style>
 
@@ -384,16 +408,16 @@
                             'Content-Type': 'application/json',
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Update view count in the UI
-                        const viewCountElement = document.querySelector('.view-count');
-                        if (viewCountElement) {
-                            viewCountElement.textContent = data.views;
-                        }
-                        viewCounted = true;
-                    })
-                    .catch(error => console.error('Error updating view count:', error));
+                        .then(response => response.json())
+                        .then(data => {
+                            // Update view count in the UI
+                            const viewCountElement = document.querySelector('.view-count');
+                            if (viewCountElement) {
+                                viewCountElement.textContent = data.views;
+                            }
+                            viewCounted = true;
+                        })
+                        .catch(error => console.error('Error updating view count:', error));
                 }, VIEW_DURATION);
             }
         }

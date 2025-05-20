@@ -11,10 +11,47 @@ const { PrismaClient } = require("@prisma/client");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const { S3Client } = require("@aws-sdk/client-s3");
+const fs = require("fs");
 
 const app = express();
 const prisma = new PrismaClient();
 const port = process.env.PORT || 3000;
+
+// AWS S3 Configuration
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+// Multer S3 configuration
+const upload = multer({
+  storage: multerS3({
+    s3: s3Client,
+    bucket: process.env.AWS_S3_BUCKET,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      cb(null, `uploads/${uniqueSuffix}${path.extname(file.originalname)}`);
+    },
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|avif|webp|svg)$/i)) {
+      return cb(new Error("Only image files are allowed!"), false);
+    }
+    cb(null, true);
+  },
+});
 
 // View engine setup
 app.set("view engine", "ejs");
@@ -329,6 +366,7 @@ app.get("/my-posts", authenticateToken, async (req, res) => {
 app.post(
   "/posts",
   authenticateToken,
+  upload.none(),
   [
     body("title").notEmpty().withMessage("Title is required"),
     body("content").notEmpty().withMessage("Content is required"),
@@ -337,7 +375,7 @@ app.post(
   validate,
   async (req, res) => {
     try {
-      const { title, content, categoryId, published = false } = req.body;
+      const { title, content, categoryId, published = false, thumbnailUrl } = req.body;
       const slug = createSlug(title);
 
       // Check if slug already exists
@@ -350,11 +388,14 @@ app.post(
         return res.redirect("/posts/new");
       }
 
+      const thumbnail = thumbnailUrl || null;
+
       const post = await prisma.post.create({
         data: {
           title,
           slug,
           content,
+          thumbnail,
           published,
           authorId: req.user.id,
           categoryId: parseInt(categoryId),
@@ -373,7 +414,7 @@ app.post(
 app.get("/posts", async (req, res) => {
   try {
     const { search = "", category = "", page = 1 } = req.query;
-    const pageSize = 10;
+    const pageSize = 9  ;
     const pageNum = parseInt(page) || 1;
     const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },
@@ -538,6 +579,7 @@ app.get("/posts/:slug/edit", authenticateToken, async (req, res) => {
 app.put(
   "/posts/:slug",
   authenticateToken,
+  upload.none(),
   [
     body("title").notEmpty().withMessage("Title is required"),
     body("content").notEmpty().withMessage("Content is required"),
@@ -574,12 +616,19 @@ app.put(
         }
       }
 
+      // Handle thumbnail update
+      let thumbnail = post.thumbnail;
+      if (req.body.thumbnailUrl) {
+        thumbnail = req.body.thumbnailUrl;
+      }
+
       const updatedPost = await prisma.post.update({
         where: { slug },
         data: {
           title: req.body.title,
           slug: newSlug,
           content: req.body.content,
+          thumbnail,
           categoryId: parseInt(req.body.categoryId),
           published: req.body.published === "on",
         },
@@ -588,6 +637,7 @@ app.put(
       req.flash("success_msg", "Post updated successfully!");
       res.redirect(`/posts/${updatedPost.slug}`);
     } catch (error) {
+      console.error("Update post error:", error);
       req.flash("error_msg", "Error updating post");
       res.redirect(`/posts/${req.params.slug}/edit`);
     }
@@ -859,6 +909,22 @@ app.delete("/categories/:slug", isAdmin, async (req, res) => {
   }
 });
 
+// Image upload route for thumbnail (S3)
+app.post("/upload-image", authenticateToken, upload.single("thumbnail"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    res.json({
+      url: req.file.location,
+      uploaded: true
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -871,7 +937,7 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res) => {
-  if (req.xhr || req.headers.accept.includes("application/json")) {
+  if (req.xhr || req.headers.accept?.includes("application/json")) {
     return res.status(404).json({ error: "Not found" });
   }
   res.status(404).render("404");

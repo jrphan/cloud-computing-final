@@ -28,8 +28,24 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="thumbnail" class="form-label">Ảnh thumbnail</label>
+                            <% if (post.thumbnail) { %>
+                                <div class="mb-2">
+                                    <img src="<%= post.thumbnail %>" alt="Current thumbnail" class="img-thumbnail"
+                                        style="max-height: 200px;" id="current-thumbnail">
+                                </div>
+                                <% } %>
+                                    <input type="file" class="form-control" id="thumbnail" accept="image/*">
+                                    <input type="hidden" id="thumbnailUrl" name="thumbnailUrl"
+                                        value="<%= post.thumbnail %>">
+                                    <div class="form-text">Chọn ảnh thumbnail mới (để trống nếu không muốn thay đổi)
+                                    </div>
+                                    <div id="thumbnail-preview-container"></div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="content" class="form-label">Nội dung</label>
-                            <textarea class="form-control" id="content" name="content" rows="10"
+                            <textarea class="form-control" id="content" name="content"
                                 required><%= post.content %></textarea>
                         </div>
 
@@ -48,5 +64,93 @@
             </div>
         </div>
     </div>
+
+    <!-- CKEditor 5 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                toolbar: {
+                    items: [
+                        'undo', 'redo',
+                        '|', 'heading',
+                        '|', 'bold', 'italic', 'strikethrough', 'underline',
+                        '|', 'bulletedList', 'numberedList',
+                        '|', 'outdent', 'indent',
+                        '|', 'link', 'blockQuote', 'insertTable', 'imageUpload',
+                        '|', 'removeFormat'
+                    ]
+                },
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells'
+                    ]
+                }
+            })
+            .then(editor => {
+                console.log('Editor initialized');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        document.getElementById('thumbnail').addEventListener('change', async function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                // Hiển thị preview
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    let preview = document.getElementById('thumbnail-preview');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.id = 'thumbnail-preview';
+                        preview.className = 'img-thumbnail';
+                        preview.style.maxHeight = '200px';
+                        document.getElementById('thumbnail-preview-container').appendChild(preview);
+                    }
+                    preview.src = evt.target.result;
+                    // Ẩn thumbnail cũ nếu có
+                    const current = document.getElementById('current-thumbnail');
+                    if (current) current.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+
+                // Upload lên server
+                const formData = new FormData();
+                formData.append('thumbnail', file);
+                const res = await fetch('/upload-image', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                if (!res.ok) {
+                    throw new Error('Upload failed');
+                }
+
+                const data = await res.json();
+                if (data.url) {
+                    document.getElementById('thumbnailUrl').value = data.url;
+                } else {
+                    throw new Error('No URL returned');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Upload ảnh thất bại! Vui lòng thử lại.');
+            }
+        });
+    </script>
 
     <%- include('../partials/footer') %>

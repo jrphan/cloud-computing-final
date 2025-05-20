@@ -235,6 +235,74 @@ async function main() {
         categoryId: categories[5].id,
       },
     }),
+
+    // New Web Development post
+    prisma.post.create({
+      data: {
+        title: "TypeScript 5.0: Những tính năng mới và cách sử dụng",
+        slug: "typescript-5-0-nhung-tinh-nang-moi-va-cach-su-dung",
+        content: `TypeScript 5.0 đã mang đến nhiều cải tiến đáng chú ý cho cộng đồng phát triển. Phiên bản này tập trung vào việc cải thiện hiệu suất và thêm các tính năng mới hữu ích.
+
+                Một trong những tính năng nổi bật là Decorators, cho phép bạn thêm metadata và thay đổi hành vi của classes và methods. Ngoài ra, const type parameters giúp tối ưu hóa type inference và làm code TypeScript chặt chẽ hơn.
+
+                Bài viết sẽ hướng dẫn chi tiết cách sử dụng các tính năng mới này trong dự án thực tế, cùng với các best practices và ví dụ cụ thể.`,
+        thumbnail: "https://images.unsplash.com/photo-1516116216624-53e697fedbea",
+        published: true,
+        authorId: users[2].id,
+        categoryId: categories[0].id,
+      },
+    }),
+
+    // New Mobile Development post
+    prisma.post.create({
+      data: {
+        title: "SwiftUI vs UIKit: Lựa chọn nào cho iOS Development?",
+        slug: "swiftui-vs-uikit-lua-chon-nao-cho-ios-development",
+        content: `SwiftUI và UIKit là hai framework chính để phát triển ứng dụng iOS. Mỗi framework đều có những ưu điểm và trường hợp sử dụng riêng.
+
+                SwiftUI mang đến cách tiếp cận declarative và modern, giúp phát triển UI nhanh hơn và dễ bảo trì. Trong khi đó, UIKit vẫn là lựa chọn tốt cho các ứng dụng phức tạp và cần tùy biến cao.
+
+                Bài viết sẽ phân tích chi tiết về hiệu suất, khả năng tùy biến, và các yếu tố khác để giúp bạn chọn framework phù hợp cho dự án iOS của mình.`,
+        thumbnail: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c",
+        published: true,
+        authorId: users[3].id,
+        categoryId: categories[1].id,
+      },
+    }),
+
+    // New DevOps & Cloud post
+    prisma.post.create({
+      data: {
+        title: "AWS Lambda và Serverless Architecture: Hướng dẫn thực hành",
+        slug: "aws-lambda-va-serverless-architecture-huong-dan-thuc-hanh",
+        content: `Serverless Architecture đang trở thành xu hướng trong phát triển ứng dụng hiện đại. AWS Lambda là một trong những dịch vụ serverless phổ biến nhất.
+
+                Bài viết sẽ hướng dẫn bạn cách xây dựng ứng dụng serverless với AWS Lambda, từ việc setup môi trường đến triển khai và monitoring. Chúng ta sẽ tìm hiểu về các best practices, cách xử lý cold start, và tối ưu hóa chi phí.
+
+                Ngoài ra, bài viết cũng sẽ đề cập đến việc tích hợp Lambda với các dịch vụ AWS khác như API Gateway, DynamoDB, và S3.`,
+        thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479",
+        published: true,
+        authorId: users[4].id,
+        categoryId: categories[2].id,
+      },
+    }),
+
+    // New AI & Machine Learning post
+    prisma.post.create({
+      data: {
+        title: "Machine Learning trong thực tế: Từ lý thuyết đến ứng dụng",
+        slug: "machine-learning-trong-thuc-te-tu-ly-thuyet-den-ung-dung",
+        content: `Machine Learning đang thay đổi cách chúng ta giải quyết các vấn đề trong thực tế. Từ việc dự đoán xu hướng đến phân tích dữ liệu, ML đang trở thành công cụ không thể thiếu.
+
+                Bài viết sẽ hướng dẫn bạn cách áp dụng Machine Learning vào các bài toán thực tế, từ việc chuẩn bị dữ liệu đến triển khai model. Chúng ta sẽ tìm hiểu về các thuật toán phổ biến, cách đánh giá model, và các best practices trong ML.
+
+                Ngoài ra, bài viết cũng sẽ đề cập đến các thách thức và giải pháp khi triển khai ML trong môi trường production.`,
+        thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+        published: true,
+        authorId: users[0].id,
+        categoryId: categories[3].id,
+      },
+    }),
   ]);
 
   // Create comments
