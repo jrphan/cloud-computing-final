@@ -28,7 +28,7 @@ model Post {
   slug       String    @unique
   content    String    @db.Text
   thumbnail  String? // URL to the post's thumbnail image
-  published  Boolean   @default(false)
+  published  Boolean   @default(true)
   author     User      @relation(fields: [authorId], references: [id])
   authorId   Int
   category   Category  @relation(fields: [categoryId], references: [id])

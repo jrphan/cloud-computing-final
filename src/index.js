@@ -351,7 +351,7 @@ app.post(
   validate,
   async (req, res) => {
     try {
-      const { title, content, categoryId, published = false, thumbnailUrl } = req.body;
+      const { title, content, categoryId, thumbnailUrl } = req.body;
       const slug = createSlug(title);
 
       // Check if slug already exists
@@ -372,7 +372,6 @@ app.post(
           slug,
           content,
           thumbnail,
-          published,
           authorId: req.user.id,
           categoryId: parseInt(categoryId),
         },
@@ -606,7 +605,6 @@ app.put(
           content: req.body.content,
           thumbnail,
           categoryId: parseInt(req.body.categoryId),
-          published: req.body.published === "on",
         },
       });
 
