@@ -117,7 +117,7 @@
                                                                 <% if (locals.user && (user.id===comment.authorId ||
                                                                     user.role==='ADMIN' )) { %>
                                                                     <form
-                                                                        action="/posts/<%= post.slug %>/comments/<%= comment.id %>?_method=DELETE"
+                                                                        action="/comments/<%= comment.id %>?_method=DELETE"
                                                                         method="POST" class="d-inline">
                                                                         <button type="submit"
                                                                             class="btn btn-link text-danger p-0"
